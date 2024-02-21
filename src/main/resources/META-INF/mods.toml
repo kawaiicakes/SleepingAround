@@ -1,0 +1,29 @@
+modLoader="javafml"
+loaderVersion="[43,)"
+license="MIT"
+issueTrackerURL="https://github.com/kawaiicakes/SleepingAround/issues"
+
+[[mods]]
+modId="sleepingaround"
+version="1.19.2-1.0.0"
+displayName="Sleeping Around"
+displayURL="https://github.com/kawaiicakes/SleepingAround/"
+logoFile="sleepingaround.png"
+credits=""
+authors="kawaiicakes"
+description='''
+Multiple respawn points, random worldspawn, and more! Fully configurable!
+'''
+
+[[dependencies.sleepingaround]]
+    modId="forge"
+    mandatory=true
+    versionRange="[43,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.sleepingaround]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.19.2,1.20)"
+    ordering="NONE"
+    side="BOTH"
