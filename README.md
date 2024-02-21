@@ -9,7 +9,7 @@ ___
 ![Environment](https://img.shields.io/badge/environment-server-ffe8e9?style=for-the-badge&labelColor=ffced2)
 
 ![CurseForge Downloads](https://img.shields.io/curseforge/dt/977518?style=for-the-badge&logo=curseforge&labelColor=ffceea&color=ffe8f5&link=https://www.curseforge.com/minecraft/mc-mods/sleeping-around)
-![GitHub issues](https://img.shields.io/github/issues/kawaiicakes/SleepingAround?style=for-the-badge&logo=github&labelColor=ffceea&color=ffe8f5&link=https://github.com/kawaiicakes/SleepingAround/blob/1.19.2-dev/LICENSE)
+![GitHub issues](https://img.shields.io/github/issues/kawaiicakes/SleepingAround?style=for-the-badge&logo=github&labelColor=ffceea&color=ffe8f5&link=https://github.com/kawaiicakes/SleepingAround/issues)
 ![Software License](https://img.shields.io/badge/license-MIT-ffe8f5?style=for-the-badge&labelColor=ffceea&link=https://github.com/kawaiicakes/SleepingAround/blob/1.19.2-dev/LICENSE)
 
 ![GitHub](https://img.shields.io/badge/-github-fee8ff?style=for-the-badge&logo=github&labelColor=fcceff&link=https://github.com/kawaiicakes)
