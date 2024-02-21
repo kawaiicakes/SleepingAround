@@ -2,7 +2,7 @@
 
 ___
 
-### Simple mod stopping players from building during PvP. Highly configurable.
+### Simple, configurable, enhanced spawning & respawning.
 
 ![Mod Loader](https://img.shields.io/badge/mod_loader-forge-ffe8e9?style=for-the-badge&labelColor=ffced2)
 ![Game Version](https://img.shields.io/badge/game_version-1.19.2-ffe8e9?style=for-the-badge&labelColor=ffced2)
@@ -24,8 +24,7 @@ Spice up your modpacks with enhanced spawn & respawning mechanics!
 
 # 📖 Information
 
-- Easy to configure
-- Highly adaptable to your needs!
+- blah blah blah
 
 ___
 
