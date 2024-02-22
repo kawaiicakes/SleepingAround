@@ -5,5 +5,13 @@
   "config.sleepingaround.max_spawnpoints_per-dimension": "The maximum number of spawnpoints allowed for a player per dimension. Set to 0 to disable this limit.",
   "config.sleepingaround.dimension_blacklist": "Place the ID of any dimension in this list if you wish to disable multiple spawnpoints there.",
   "config.sleepingaround.random_worldspawns": "Whether random worldspawn is turned on or not.",
-  "config.sleepingaround.random_worldspawn_radius": "The maximum distance from worldspawn that a player can spawn at randomly."
+  "config.sleepingaround.random_worldspawn_radius": "The maximum distance from worldspawn that a player can spawn at randomly.",
+  "sleep.sleepingaround.set": "Successfully added spawnpoint.",
+  "sleep.sleepingaround.remove": "Successfully removed spawnpoint.",
+  "sleep.sleepingaround.remaining_pos": "%1$s spawns out of %2$s remaining.",
+  "sleep.sleepingaround.remaining_pos_dim": "%1$s spawns out of %2$s remaining in %3$s.",
+  "sleep.sleepingaround.fail1": "You have hit the maximum limit of spawnpoints. Your oldest spawnpoint has been removed.",
+  "sleep.sleepingaround.fail2": "Unable to add spawnpoint to spawn list.",
+  "sleep.sleepingaround.fail3": "Unable to remove spawnpoint from spawn list.",
+  "sleep.sleepingaround.fail4": "You have no spawnpoints to remove!"
 }

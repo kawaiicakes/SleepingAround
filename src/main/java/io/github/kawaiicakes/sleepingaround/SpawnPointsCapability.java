@@ -48,6 +48,14 @@ public class SpawnPointsCapability {
 
     protected final Map<ResourceLocation, List<BlockPos>> spawns = new HashMap<>();
 
+    public int usedSpawns() {
+        return this.spawns.values().stream().mapToInt(List::size).sum();
+    }
+
+    public int usedSpawns(ResourceKey<Level> dimension) {
+        return this.spawns.computeIfAbsent(dimension.location(), x -> new ArrayList<>()).size();
+    }
+
     public boolean addSpawnpoint(ResourceKey<Level> dimension, BlockPos spawnPos) {
         try {
             ResourceLocation dimensionId = dimension.location();
@@ -66,6 +74,19 @@ public class SpawnPointsCapability {
             ResourceLocation dimensionId = dimension.location();
             List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
             return spawnPositions.remove(spawnPos);
+        } catch (Throwable e) {
+            LOGGER.error("Error while trying to remove spawnpoint!", e);
+            return false;
+        }
+    }
+
+    public boolean removeSpawnpoint(ResourceKey<Level> dimension) {
+        try {
+            ResourceLocation dimensionId = dimension.location();
+            List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
+            int i = spawnPositions.size() - 1;
+            spawnPositions.remove(i);
+            return true;
         } catch (Throwable e) {
             LOGGER.error("Error while trying to remove spawnpoint!", e);
             return false;
