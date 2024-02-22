@@ -90,6 +90,7 @@ public class SleepingAround {
     }
 
     // TODO: this should be called when: sneak + use on bed, via command, via GUI
+    // FIXME: being able to spawn at removed spawnpoints
     public static void removeSpawnpointAt(ResourceKey<Level> dimension, ServerPlayer player, BlockPos spawnPos) {
         if (!SERVER.multipleSpawns.get()) return;
         if (SERVER.dimBlacklist.get().contains(dimension.location().toString())) return;
