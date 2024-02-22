@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
@@ -37,7 +37,7 @@ public class SpawnPointsCapability {
      * @return an <code>Optional</code> returning empty if this capability was unable to be obtained from the passed player.
      *          Returns this capability otherwise.
      */
-    public static Optional<SpawnPointsCapability> getCapability(ServerPlayer player) {
+    public static Optional<SpawnPointsCapability> spawnpointsOf(ServerPlayer player) {
         try {
             return player.getCapability(Provider.SP_CAP).resolve();
         } catch (Throwable e) {
@@ -46,23 +46,25 @@ public class SpawnPointsCapability {
         }
     }
 
-    protected final Map<ResourceLocation, Set<BlockPos>> spawns = new HashMap<>();
+    protected final Map<ResourceLocation, List<BlockPos>> spawns = new HashMap<>();
 
-    public boolean addSpawnpoint(ResourceKey<DimensionType> dimension, BlockPos spawnPos) {
+    public boolean addSpawnpoint(ResourceKey<Level> dimension, BlockPos spawnPos) {
         try {
             ResourceLocation dimensionId = dimension.location();
-            Set<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new HashSet<>());
-            return spawnPositions.add(spawnPos);
+            List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
+            if (spawnPositions.contains(spawnPos)) return false;
+            spawnPositions.add(0, spawnPos);
+            return true;
         } catch (Throwable e) {
             LOGGER.error("Error while trying to add spawnpoint!", e);
             return false;
         }
     }
 
-    public boolean removeSpawnpoint(ResourceKey<DimensionType> dimension, BlockPos spawnPos) {
+    public boolean removeSpawnpoint(ResourceKey<Level> dimension, BlockPos spawnPos) {
         try {
             ResourceLocation dimensionId = dimension.location();
-            Set<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new HashSet<>());
+            List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
             return spawnPositions.remove(spawnPos);
         } catch (Throwable e) {
             LOGGER.error("Error while trying to remove spawnpoint!", e);
