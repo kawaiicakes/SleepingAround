@@ -1,0 +1,9 @@
+{
+  "config.sleepingaround.multiple_spawnpoints": "Whether players may have multiple spawnpoints.",
+  "config.sleepingaround.random_spawns": "Whether players will randomly spawn at one of their spawnpoints.",
+  "config.sleepingaround.max_spawnpoints": "The maximum number of spawnpoints allowed per player. Set to 0 to disable this limit.",
+  "config.sleepingaround.max_spawnpoints_per-dimension": "The maximum number of spawnpoints allowed for a player per dimension. Set to 0 to disable this limit.",
+  "config.sleepingaround.dimension_blacklist": "Place the ID of any dimension in this list if you wish to disable multiple spawnpoints there.",
+  "config.sleepingaround.random_worldspawns": "Whether random worldspawn is turned on or not.",
+  "config.sleepingaround.random_worldspawn_radius": "The maximum distance from worldspawn that a player can spawn at randomly."
+}
