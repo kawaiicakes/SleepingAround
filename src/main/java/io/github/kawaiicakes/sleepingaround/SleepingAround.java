@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -97,30 +98,31 @@ public class SleepingAround {
         if (!(event.getPlayer() instanceof ServerPlayer player)) return;
         if (!(event.getState().getBlock() instanceof BedBlock)) return;
 
-        if (!removeSpawnpointAt(event.getPlayer().level.dimension(), player, event.getPos())) {
+        BlockPos spawnPos = event.getPos();
+        if (!BedBlock.getBlockType(event.getState()).equals(DoubleBlockCombiner.BlockType.FIRST)) {
             Direction offsetDirection = BedBlock.getConnectedDirection(event.getState());
-            removeSpawnpointAt(event.getPlayer().level.dimension(), player, event.getPos().relative(offsetDirection));
+            spawnPos = event.getPos().relative(offsetDirection);
         }
+
+        removeSpawnpointAt(event.getPlayer().level.dimension(), player, spawnPos);
     }
 
     // TODO: this should be called when: via command, via GUI
     // FIXME: being able to spawn at removed spawnpoints
-    public static boolean removeSpawnpointAt(ResourceKey<Level> dimension, ServerPlayer player, BlockPos spawnPos) {
-        if (!SERVER.multipleSpawns.get()) return false;
-        if (SERVER.dimBlacklist.get().contains(dimension.location().toString())) return false;
+    public static void removeSpawnpointAt(ResourceKey<Level> dimension, ServerPlayer player, BlockPos spawnPos) {
+        if (!SERVER.multipleSpawns.get()) return;
+        if (SERVER.dimBlacklist.get().contains(dimension.location().toString())) return;
 
         try {
             SpawnPointsCapability capability = SpawnPointsCapability.spawnpointsOf(player).orElseThrow();
             if (!capability.removeSpawnpoint(dimension, spawnPos)) {
                 player.sendSystemMessage(FAIL4);
-                return false;
+                return;
             }
             player.sendSystemMessage(REMOVE_SPAWN_MESSAGE);
-            return true;
         } catch (Throwable e) {
             LOGGER.error("Error attempting to remove spawnpoint at {} for player {} in {}!", spawnPos, player.getGameProfile().getName(), dimension.location(), e);
             player.sendSystemMessage(FAIL3);
-            return false;
         }
     }
 }
