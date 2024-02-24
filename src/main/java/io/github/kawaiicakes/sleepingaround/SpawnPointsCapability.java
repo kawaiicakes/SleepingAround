@@ -3,6 +3,10 @@ package io.github.kawaiicakes.sleepingaround;
 import com.mojang.logging.LogUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +16,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -46,7 +51,7 @@ public class SpawnPointsCapability {
         }
     }
 
-    protected final Map<ResourceLocation, List<BlockPos>> spawns = new HashMap<>();
+    protected Map<ResourceLocation, List<BlockPos>> spawns = new HashMap<>();
 
     public int usedSpawns() {
         return this.spawns.values().stream().mapToInt(List::size).sum();
@@ -93,6 +98,30 @@ public class SpawnPointsCapability {
         }
     }
 
+    public void save(CompoundTag nbt) {
+        for (Map.Entry<ResourceLocation, List<BlockPos>> entry : this.spawns.entrySet()) {
+            ListTag spawnPosList = new ListTag();
+            spawnPosList.addAll(entry.getValue().stream().map(NbtUtils::writeBlockPos).toList());
+            nbt.put(entry.getKey().toString(), spawnPosList);
+        }
+    }
+
+    public void load(CompoundTag nbt) {
+        try {
+            for (String dimensionString : nbt.getAllKeys()) {
+                List<BlockPos> spawnPosList = nbt.getList(dimensionString, Tag.TAG_COMPOUND)
+                        .stream().map(compoundPos -> NbtUtils.readBlockPos((CompoundTag) compoundPos)).toList();
+                this.spawns.put(new ResourceLocation(dimensionString), spawnPosList);
+            }
+        } catch (Throwable e) {
+            LOGGER.error("Error while attempting to load SpawnPointsCapability!", e);
+        }
+    }
+
+    public void copy(SpawnPointsCapability original) {
+        this.spawns = original.spawns;
+    }
+
     @SubscribeEvent
     public static void attachCapability(AttachCapabilitiesEvent<Entity> event) {
         if (!(event.getObject() instanceof ServerPlayer player)) return;
@@ -101,7 +130,7 @@ public class SpawnPointsCapability {
         event.addCapability(CAP_ID, new Provider());
     }
 
-    public static class Provider implements ICapabilityProvider {
+    public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag> {
         public static Capability<SpawnPointsCapability> SP_CAP = CapabilityManager.get(new CapabilityToken<>() {});
 
         public SpawnPointsCapability capability;
@@ -121,6 +150,18 @@ public class SpawnPointsCapability {
             }
 
             return LazyOptional.empty();
+        }
+
+        @Override
+        public CompoundTag serializeNBT() {
+            CompoundTag nbt = new CompoundTag();
+            this.createCapability().save(nbt);
+            return nbt;
+        }
+
+        @Override
+        public void deserializeNBT(CompoundTag nbt) {
+            this.createCapability().load(nbt);
         }
     }
 }

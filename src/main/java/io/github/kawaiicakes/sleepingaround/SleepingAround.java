@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.DoubleBlockCombiner;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -45,6 +46,20 @@ public class SleepingAround {
         MinecraftForge.EVENT_BUS.register(SpawnPointsCapability.class);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, SERVER_SPEC);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerClone(PlayerEvent.Clone event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        if (!(event.getOriginal() instanceof ServerPlayer original)) return;
+        if (!event.isWasDeath()) return;
+
+        try {
+            SpawnPointsCapability ogCap = SpawnPointsCapability.spawnpointsOf(original).orElseThrow();
+            SpawnPointsCapability.spawnpointsOf(player).orElseThrow().copy(ogCap);
+        } catch (Throwable e) {
+            LOGGER.error("Exception while attempting to copy spawnpoints!", e);
+        }
     }
 
     @SubscribeEvent
