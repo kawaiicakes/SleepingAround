@@ -64,9 +64,12 @@ public class SpawnPointsCapability {
     public boolean addSpawnpoint(ResourceKey<Level> dimension, BlockPos spawnPos) {
         try {
             ResourceLocation dimensionId = dimension.location();
-            List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
-            if (spawnPositions.contains(spawnPos)) return false;
-            spawnPositions.add(0, spawnPos);
+            List<BlockPos> currentSpawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
+            if (currentSpawnPositions.contains(spawnPos)) return false;
+            List<BlockPos> newSpawnPositions = new ArrayList<>(currentSpawnPositions.size() + 1);
+            newSpawnPositions.add(spawnPos);
+            newSpawnPositions.addAll(currentSpawnPositions);
+            this.spawns.put(dimensionId, newSpawnPositions);
             return true;
         } catch (Throwable e) {
             LOGGER.error("Error while trying to add spawnpoint!", e);
@@ -77,20 +80,31 @@ public class SpawnPointsCapability {
     public boolean removeSpawnpoint(ResourceKey<Level> dimension, BlockPos spawnPos) {
         try {
             ResourceLocation dimensionId = dimension.location();
-            List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
-            return spawnPositions.remove(spawnPos);
+            List<BlockPos> currentSpawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
+            if (!currentSpawnPositions.contains(spawnPos)) return false;
+            List<BlockPos> newSpawnPositions = new ArrayList<>(currentSpawnPositions.size());
+            newSpawnPositions.addAll(currentSpawnPositions);
+            newSpawnPositions.remove(spawnPos);
+            this.spawns.put(dimensionId, newSpawnPositions);
+            return true;
         } catch (Throwable e) {
             LOGGER.error("Error while trying to remove spawnpoint!", e);
             return false;
         }
     }
 
+    /**
+     * Removes the oldest spawnpoint of a player
+     */
     public boolean removeSpawnpoint(ResourceKey<Level> dimension) {
         try {
             ResourceLocation dimensionId = dimension.location();
-            List<BlockPos> spawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
-            int i = spawnPositions.size() - 1;
-            spawnPositions.remove(i);
+            List<BlockPos> currentSpawnPositions = this.spawns.computeIfAbsent(dimensionId, x -> new ArrayList<>());
+            int i = currentSpawnPositions.size() - 1;
+            List<BlockPos> newSpawnPositions = new ArrayList<>(currentSpawnPositions.size());
+            newSpawnPositions.addAll(currentSpawnPositions);
+            newSpawnPositions.remove(i);
+            this.spawns.put(dimensionId, newSpawnPositions);
             return true;
         } catch (Throwable e) {
             LOGGER.error("Error while trying to remove spawnpoint!", e);

@@ -130,6 +130,8 @@ public class SleepingAround {
 
         try {
             SpawnPointsCapability capability = SpawnPointsCapability.spawnpointsOf(player).orElseThrow();
+            // FIXME: using a bed, (thus setting spawn) then breaking it, then placing and using it again will not cause this mod to add the spawnpoint again
+            // this is because Minecraft does not set the player's spawn in this scenario since it didn't know the bed was broken and replaced
             if (!capability.removeSpawnpoint(dimension, spawnPos)) {
                 player.sendSystemMessage(FAIL4);
                 return;
